@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>말씀 암송 도전 · 수련회</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Jua&display=swap');
+
+  :root{
+    --ink:#1c2530;
+    --paper:#f4ede0;
+    --paper-deep:#e8dcc5;
+    --gold:#b8893a;
+    --gold-deep:#8a6322;
+    --moss:#3f5f4a;
+    --moss-light:#5c7d66;
+    --berry:#9c3b42;
+    --line:#cdbfa3;
+    --shadow:rgba(40,30,15,.18);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  body{
+    font-family:'Gowun Batang',serif;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(184,137,58,.12), transparent 45%),
+      radial-gradient(circle at 85% 90%, rgba(63,95,74,.14), transparent 50%),
+      var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    line-height:1.7;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  /* paper grain */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/></svg>");
+  }
+
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:20px 16px 80px;}
+
+  /* ---------- header ---------- */
+  header{text-align:center;padding:24px 12px 18px;}
+  .crest{
+    font-family:'Jua',sans-serif;
+    display:inline-block;font-size:13px;letter-spacing:.32em;
+    color:var(--gold-deep);border:1.5px solid var(--gold);
+    padding:5px 16px;border-radius:30px;margin-bottom:14px;
+    background:rgba(255,255,255,.4);
+  }
+  h1{
+    font-family:'Jua',sans-serif;font-weight:400;
+    font-size:clamp(28px,7vw,42px);color:var(--ink);
+    letter-spacing:.02em;line-height:1.25;
+  }
+  h1 .accent{color:var(--gold-deep);}
+  .sub{margin-top:8px;font-size:14px;color:var(--moss);}
+  .divider{
+    width:64px;height:3px;margin:16px auto 0;border-radius:3px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  }
+
+  /* ---------- tabs ---------- */
+  .tabs{
+    display:flex;gap:6px;margin:22px 0 18px;
+    background:var(--paper-deep);padding:6px;border-radius:16px;
+    border:1px solid var(--line);
+  }
+  .tab{
+    flex:1;font-family:'Jua',sans-serif;font-size:15px;
+    padding:11px 8px;text-align:center;border-radius:11px;
+    cursor:pointer;color:var(--moss);transition:.2s;border:none;background:none;
+  }
+  .tab.active{background:var(--ink);color:var(--paper);box-shadow:0 4px 10px var(--shadow);}
+
+  /* ---------- card ---------- */
+  .card{
+    background:linear-gradient(180deg,#fffdf7,#f7f0e0);
+    border:1px solid var(--line);border-radius:18px;
+    padding:22px 20px;margin-bottom:18px;
+    box-shadow:0 6px 22px var(--shadow);
+  }
+  .card-title{
+    font-family:'Jua',sans-serif;font-size:18px;color:var(--gold-deep);
+    margin-bottom:14px;display:flex;align-items:center;gap:8px;
+  }
+  .card-title::before{content:"";width:6px;height:20px;background:var(--gold);border-radius:3px;}
+
+  label{display:block;font-size:13px;color:var(--moss);margin:14px 0 6px;font-weight:700;}
+  label:first-of-type{margin-top:0;}
+
+  input,select,textarea{
+    width:100%;font-family:'Gowun Batang',serif;font-size:16px;
+    padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;
+    background:#fffdf6;color:var(--ink);transition:.18s;
+  }
+  input:focus,select:focus,textarea:focus{
+    outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,137,58,.16);
+  }
+  textarea{resize:vertical;min-height:90px;line-height:1.8;}
+
+  .btn{
+    width:100%;font-family:'Jua',sans-serif;font-size:17px;
+    padding:14px;border:none;border-radius:13px;cursor:pointer;
+    background:var(--ink);color:var(--paper);margin-top:18px;
+    transition:.18s;box-shadow:0 5px 14px var(--shadow);
+  }
+  .btn:active{transform:translateY(2px);box-shadow:0 2px 6px var(--shadow);}
+  .btn.gold{background:linear-gradient(135deg,var(--gold),var(--gold-deep));}
+  .btn.moss{background:linear-gradient(135deg,var(--moss-light),var(--moss));}
+  .btn.ghost{background:none;color:var(--moss);border:1.5px solid var(--line);box-shadow:none;}
+  .btn-row{display:flex;gap:10px;}
+  .btn-row .btn{flex:1;}
+
+  /* ---------- verse display ---------- */
+  .verse-box{
+    margin-top:18px;padding:20px;border-radius:14px;
+    background:var(--ink);color:var(--paper);position:relative;
+    border:1px solid var(--gold-deep);
+  }
+  .verse-box .ref{
+    font-family:'Jua',sans-serif;font-size:14px;color:var(--gold);
+    letter-spacing:.05em;margin-bottom:8px;
+  }
+  .verse-box .text{font-size:17px;line-height:1.85;}
+  .verse-box .quote{font-size:42px;color:var(--gold);line-height:0;
+    font-family:'Jua',sans-serif;opacity:.4;}
+
+  .blank{
+    display:inline-block;min-width:62px;border-bottom:2.5px solid var(--gold);
+    margin:0 2px;text-align:center;color:var(--gold);font-weight:700;
+  }
+
+  /* fill-in inputs */
+  .fill-input{
+    display:inline-block;width:auto;min-width:70px;max-width:160px;
+    font-size:15px;padding:3px 8px;margin:2px;border-radius:8px;
+    border:1.5px solid var(--moss-light);background:#fffdf6;text-align:center;
+  }
+
+  .pill{
+    display:inline-block;font-size:12px;padding:3px 11px;border-radius:20px;
+    background:var(--paper-deep);color:var(--moss);margin:3px 4px 3px 0;
+    border:1px solid var(--line);
+  }
+
+  .result{
+    margin-top:16px;padding:16px;border-radius:13px;text-align:center;
+    font-family:'Jua',sans-serif;
+  }
+  .result.pass{background:rgba(63,95,74,.12);border:1.5px solid var(--moss);color:var(--moss);}
+  .result.near{background:rgba(184,137,58,.14);border:1.5px solid var(--gold-deep);color:var(--gold-deep);}
+  .result.fail{background:rgba(156,59,66,.1);border:1.5px solid var(--berry);color:var(--berry);}
+  .result .score{font-size:34px;display:block;line-height:1.2;}
+  .result .msg{font-size:14px;font-family:'Gowun Batang',serif;margin-top:4px;}
+
+  .diff-box{
+    margin-top:12px;font-size:14px;background:#fffdf6;border:1px dashed var(--line);
+    border-radius:10px;padding:12px;text-align:left;line-height:2;
+  }
+  .diff-box .ok{color:var(--moss);}
+  .diff-box .bad{color:var(--berry);background:rgba(156,59,66,.12);
+    border-radius:4px;padding:1px 4px;font-weight:700;}
+  .diff-box .miss{color:var(--gold-deep);background:rgba(184,137,58,.16);
+    border-radius:4px;padding:1px 4px;text-decoration:line-through;}
+
+  /* ---------- dashboard ---------- */
+  .stat-row{display:flex;gap:10px;margin-bottom:16px;}
+  .stat{
+    flex:1;background:linear-gradient(180deg,#fffdf7,#f3ead7);
+    border:1px solid var(--line);border-radius:14px;padding:14px 8px;text-align:center;
+  }
+  .stat .num{font-family:'Jua',sans-serif;font-size:30px;color:var(--gold-deep);}
+  .stat .lab{font-size:12px;color:var(--moss);margin-top:2px;}
+
+  .person{
+    background:#fffdf6;border:1px solid var(--line);border-radius:13px;
+    padding:14px;margin-bottom:10px;
+  }
+  .person-head{display:flex;justify-content:space-between;align-items:center;}
+  .person-name{font-family:'Jua',sans-serif;font-size:17px;}
+  .person-team{font-size:12px;color:var(--moss);}
+  .badge{
+    font-family:'Jua',sans-serif;font-size:13px;padding:4px 12px;border-radius:20px;
+  }
+  .badge.done{background:var(--moss);color:#fff;}
+  .badge.prog{background:var(--gold);color:#fff;}
+  .badge.zero{background:var(--paper-deep);color:var(--moss);}
+
+  .progress-track{
+    height:10px;background:var(--paper-deep);border-radius:6px;
+    margin-top:10px;overflow:hidden;border:1px solid var(--line);
+  }
+  .progress-fill{
+    height:100%;background:linear-gradient(90deg,var(--gold),var(--moss-light));
+    border-radius:6px;transition:width .5s ease;
+  }
+  .person-verses{margin-top:10px;font-size:13px;}
+  .vline{display:flex;align-items:center;gap:7px;padding:3px 0;color:var(--moss);}
+  .vline .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .vline .dot.y{background:var(--moss);}
+  .vline .dot.n{background:var(--line);}
+
+  .empty{text-align:center;color:var(--moss);padding:30px 10px;font-size:14px;}
+  .empty .big{font-size:40px;display:block;margin-bottom:8px;}
+
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(80px);
+    background:var(--ink);color:var(--paper);padding:13px 22px;border-radius:30px;
+    font-family:'Jua',sans-serif;font-size:14px;box-shadow:0 8px 24px var(--shadow);
+    z-index:50;opacity:0;transition:.35s;border:1px solid var(--gold-deep);
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+  .hint{font-size:12px;color:var(--moss);margin-top:6px;font-style:italic;}
+  .hidden{display:none;}
+
+  .topic-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px;}
+  .topic-chip{
+    font-family:'Jua',sans-serif;font-size:13px;padding:7px 13px;border-radius:20px;
+    border:1.5px solid var(--line);background:#fffdf6;color:var(--moss);cursor:pointer;transition:.16s;
+  }
+  .topic-chip.sel{background:var(--moss);color:#fff;border-color:var(--moss);}
+
+  footer{text-align:center;font-size:12px;color:var(--moss);margin-top:24px;opacity:.7;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="crest">청소년 수련회</div>
+    <h1>말씀 <span class="accent">암송</span> 도전</h1>
+    <p class="sub">주제에 맞는 말씀을 마음에 새기고 함께 확인해요</p>
+    <div class="divider"></div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="challenge">암송 도전</button>
+    <button class="tab" data-tab="dashboard">인도자 현황판</button>
+  </div>
+
+  <!-- ============ 암송 도전 탭 ============ -->
+  <section id="tab-challenge">
+
+    <div class="card" id="setupCard">
+      <div class="card-title">참가자 정보</div>
+      <label>이름</label>
+      <input id="inName" placeholder="이름을 입력하세요" autocomplete="off">
+      <label>조 / 팀 (선택)</label>
+      <input id="inTeam" placeholder="예: 1조, 사랑팀" autocomplete="off">
+
+      <label>이번 수련회 주제</label>
+      <div class="topic-grid" id="topicGrid"></div>
+      <p class="hint">주제를 고르면 그에 맞는 암송 구절이 추천돼요.</p>
+
+      <button class="btn gold" id="btnStart">암송 구절 받기</button>
+    </div>
+
+    <div class="card hidden" id="verseCard">
+      <div class="card-title"><span id="verseCardName">암송 구절</span></div>
+
+      <div id="verseInfo"></div>
+      <div class="verse-box" id="verseBox"></div>
+
+      <label style="margin-top:18px;">확인 방식</label>
+      <div class="tabs" style="margin:6px 0 0;">
+        <button class="tab active" id="modeFill" data-mode="fill">빈칸 채우기</button>
+        <button class="tab" id="modeFull" data-mode="full">전체 입력</button>
+      </div>
+
+      <div id="checkArea" style="margin-top:16px;"></div>
+
+      <button class="btn moss" id="btnCheck">암송 확인하기</button>
+      <div id="resultArea"></div>
+
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn ghost" id="btnNext">다음 구절 →</button>
+        <button class="btn ghost" id="btnChangeTopic">처음으로</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ 현황판 탭 ============ -->
+  <section id="tab-dashboard" class="hidden">
+    <div class="card">
+      <div class="card-title">전체 현황</div>
+      <div class="stat-row">
+        <div class="stat"><div class="num" id="stPeople">0</div><div class="lab">참가자</div></div>
+        <div class="stat"><div class="num" id="stVerses">0</div><div class="lab">암송 완료</div></div>
+        <div class="stat"><div class="num" id="stRate">0%</div><div class="lab">평균 달성률</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn ghost" id="btnExport">기록 내보내기</button>
+        <button class="btn ghost" id="btnReset">전체 초기화</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">참가자별 진도</div>
+      <div id="peopleList"></div>
+    </div>
+  </section>
+
+  <footer>마음에 새긴 말씀은 사라지지 않습니다 · 시편 119:11</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   데이터: 주제별 암송 구절 (개역개정)
+   ============================================================ */
+const VERSE_DB = {
+  "하나님 나라": [
+    {ref:"마태복음 6:33", text:"그런즉 너희는 먼저 그의 나라와 그의 의를 구하라 그리하면 이 모든 것을 너희에게 더하시리라", blanks:["나라","의"]},
+    {ref:"마가복음 1:15", text:"이르시되 때가 찼고 하나님의 나라가 가까이 왔으니 회개하고 복음을 믿으라 하시더라", blanks:["하나님의 나라","회개"]},
+    {ref:"로마서 14:17", text:"하나님의 나라는 먹는 것과 마시는 것이 아니요 오직 성령 안에 있는 의와 평강과 희락이라", blanks:["의와 평강과 희락","성령"]},
+    {ref:"누가복음 17:21", text:"또 여기 있다 저기 있다고도 못하리니 하나님의 나라는 너희 안에 있느니라", blanks:["너희 안에"]},
+  ],
+  "예수님을 따름": [
+    {ref:"마태복음 16:24", text:"이에 예수께서 제자들에게 이르시되 누구든지 나를 따라오려거든 자기를 부인하고 자기 십자가를 지고 나를 따를 것이니라", blanks:["자기를 부인","십자가"]},
+    {ref:"요한복음 14:6", text:"예수께서 이르시되 내가 곧 길이요 진리요 생명이니 나로 말미암지 않고는 아버지께로 올 자가 없느니라", blanks:["길이요 진리요 생명","아버지"]},
+    {ref:"마가복음 8:35", text:"누구든지 자기 목숨을 구원하고자 하면 잃을 것이요 누구든지 나와 복음을 위하여 자기 목숨을 잃으면 구원하리라", blanks:["목숨","복음"]},
+    {ref:"요한복음 8:12", text:"예수께서 또 말씀하여 이르시되 나는 세상의 빛이니 나를 따르는 자는 어둠에 다니지 아니하고 생명의 빛을 얻으리라", blanks:["세상의 빛","생명의 빛"]},
+  ],
+  "사랑과 섬김": [
+    {ref:"요한복음 13:34", text:"새 계명을 너희에게 주노니 서로 사랑하라 내가 너희를 사랑한 것 같이 너희도 서로 사랑하라", blanks:["서로 사랑하라","계명"]},
+    {ref:"마가복음 10:45", text:"인자가 온 것은 섬김을 받으려 함이 아니라 도리어 섬기려 하고 자기 목숨을 많은 사람의 대속물로 주려 함이니라", blanks:["섬기려","대속물"]},
+    {ref:"고린도전서 13:4", text:"사랑은 오래 참고 사랑은 온유하며 시기하지 아니하며 사랑은 자랑하지 아니하며 교만하지 아니하며", blanks:["오래 참고","온유"]},
+    {ref:"요한일서 4:11", text:"사랑하는 자들아 하나님이 이같이 우리를 사랑하셨은즉 우리도 서로 사랑하는 것이 마땅하도다", blanks:["사랑","마땅"]},
+  ],
+  "믿음과 기도": [
+    {ref:"히브리서 11:1", text:"믿음은 바라는 것들의 실상이요 보이지 않는 것들의 증거니", blanks:["실상","증거"]},
+    {ref:"빌립보서 4:6", text:"아무 것도 염려하지 말고 다만 모든 일에 기도와 간구로 너희 구할 것을 감사함으로 하나님께 아뢰라", blanks:["염려","기도와 간구"]},
+    {ref:"마태복음 7:7", text:"구하라 그리하면 너희에게 주실 것이요 찾으라 그리하면 찾아낼 것이요 문을 두드리라 그리하면 너희에게 열릴 것이니", blanks:["구하라","두드리라"]},
+    {ref:"야고보서 1:6", text:"오직 믿음으로 구하고 조금도 의심하지 말라 의심하는 자는 마치 바람에 밀려 요동하는 바다 물결 같으니", blanks:["믿음","의심"]},
+  ],
+  "은혜와 구원": [
+    {ref:"에베소서 2:8", text:"너희는 그 은혜에 의하여 믿음으로 말미암아 구원을 받았으니 이것은 너희에게서 난 것이 아니요 하나님의 선물이라", blanks:["은혜","하나님의 선물"]},
+    {ref:"요한복음 3:16", text:"하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 그를 믿는 자마다 멸망하지 않고 영생을 얻게 하려 하심이라", blanks:["독생자","영생"]},
+    {ref:"로마서 6:23", text:"죄의 삯은 사망이요 하나님의 은사는 그리스도 예수 우리 주 안에 있는 영생이니라", blanks:["사망","영생"]},
+    {ref:"로마서 5:8", text:"우리가 아직 죄인 되었을 때에 그리스도께서 우리를 위하여 죽으심으로 하나님께서 우리에 대한 자기의 사랑을 확증하셨느니라", blanks:["죄인","사랑을 확증"]},
+  ],
+  "용기와 소망": [
+    {ref:"여호수아 1:9", text:"내가 네게 명령한 것이 아니냐 강하고 담대하라 두려워하지 말며 놀라지 말라 네가 어디로 가든지 네 하나님 여호와가 너와 함께 하느니라", blanks:["강하고 담대하라","함께"]},
+    {ref:"빌립보서 4:13", text:"내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라", blanks:["능력","모든 것"]},
+    {ref:"이사야 41:10", text:"두려워하지 말라 내가 너와 함께 함이라 놀라지 말라 나는 네 하나님이 됨이라 내가 너를 굳세게 하리라", blanks:["두려워하지 말라","굳세게"]},
+    {ref:"예레미야 29:11", text:"여호와의 말씀이니라 너희를 향한 나의 생각을 내가 아나니 평안이요 재앙이 아니니라 너희에게 미래와 희망을 주는 것이니라", blanks:["평안","미래와 희망"]},
+  ],
+};
+const TOPICS = Object.keys(VERSE_DB);
+
+/* ============================================================
+   상태 & 저장소
+   ============================================================ */
+const STORE_KEY = "memorize_camp_v1";
+let store = loadStore();
+let session = { name:"", team:"", topic:"", verseIdx:0, mode:"fill" };
+
+function loadStore(){
+  try{ return JSON.parse(localStorage.getItem(STORE_KEY)) || {people:{}}; }
+  catch(e){ return {people:{}}; }
+}
+function saveStore(){ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
+
+/* ============================================================
+   유틸
+   ============================================================ */
+function normalize(s){
+  return (s||"").replace(/[\s\.,!?·"'""''「」『』()]/g,"").trim();
+}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2400);
+}
+function $(id){ return document.getElementById(id); }
+
+/* 두 문장의 단어 단위 일치율 (LCS 기반) */
+function similarity(ans, target){
+  const a=ans.replace(/[\s\.,!?·"'""''「」『』()]/g," ").trim().split(/\s+/).filter(Boolean);
+  const b=target.replace(/[\s\.,!?·"'""''「」『』()]/g," ").trim().split(/\s+/).filter(Boolean);
+  if(!b.length) return {score:0,a,b,lcs:[]};
+  const m=a.length,n=b.length;
+  const dp=Array.from({length:m+1},()=>new Array(n+1).fill(0));
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++){
+    dp[i][j]= a[i-1]===b[j-1] ? dp[i-1][j-1]+1 : Math.max(dp[i-1][j],dp[i][j-1]);
+  }
+  // backtrack: mark which b-words matched
+  let i=m,j=n; const matched=new Array(n).fill(false);
+  while(i>0&&j>0){
+    if(a[i-1]===b[j-1]){ matched[j-1]=true; i--;j--; }
+    else if(dp[i-1][j]>=dp[i][j-1]) i--; else j--;
+  }
+  const score=Math.round(dp[m][n]/n*100);
+  return {score,a,b,matched};
+}
+
+/* ============================================================
+   탭 전환
+   ============================================================ */
+document.querySelectorAll('.tab[data-tab]').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab[data-tab]').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const which=tab.dataset.tab;
+    $('tab-challenge').classList.toggle('hidden',which!=='challenge');
+    $('tab-dashboard').classList.toggle('hidden',which!=='dashboard');
+    if(which==='dashboard') renderDashboard();
+  });
+});
+
+/* ============================================================
+   주제 칩
+   ============================================================ */
+function renderTopics(){
+  const grid=$('topicGrid'); grid.innerHTML='';
+  TOPICS.forEach(t=>{
+    const c=document.createElement('div');
+    c.className='topic-chip'; c.textContent=t;
+    c.addEventListener('click',()=>{
+      document.querySelectorAll('.topic-chip').forEach(x=>x.classList.remove('sel'));
+      c.classList.add('sel'); session.topic=t;
+    });
+    grid.appendChild(c);
+  });
+}
+renderTopics();
+
+/* ============================================================
+   암송 시작
+   ============================================================ */
+$('btnStart').addEventListener('click',()=>{
+  const name=$('inName').value.trim();
+  if(!name){ toast('이름을 입력해 주세요'); return; }
+  if(!session.topic){ toast('수련회 주제를 선택해 주세요'); return; }
+  session.name=name;
+  session.team=$('inTeam').value.trim();
+  // 이미 외운 구절 다음부터 시작
+  const p=store.people[name];
+  session.verseIdx=0;
+  if(p && p.topic===session.topic){
+    const done=p.verses.filter(v=>v.passed).length;
+    session.verseIdx=Math.min(done, VERSE_DB[session.topic].length-1);
+  }
+  ensurePerson();
+  $('setupCard').classList.add('hidden');
+  $('verseCard').classList.remove('hidden');
+  loadVerse();
+});
+
+function ensurePerson(){
+  if(!store.people[session.name] || store.people[session.name].topic!==session.topic){
+    store.people[session.name]={
+      name:session.name, team:session.team, topic:session.topic,
+      verses:VERSE_DB[session.topic].map(v=>({ref:v.ref,passed:false,score:0})),
+      updated:Date.now()
+    };
+  } else {
+    store.people[session.name].team=session.team;
+  }
+  saveStore();
+}
+
+/* ============================================================
+   구절 로드 / 렌더
+   ============================================================ */
+function loadVerse(){
+  const list=VERSE_DB[session.topic];
+  const v=list[session.verseIdx];
+  $('verseCardName').textContent=`${session.name} 님 · ${session.topic}`;
+  $('verseInfo').innerHTML=
+    `<span class="pill">${session.verseIdx+1} / ${list.length} 구절</span>`+
+    (session.team?`<span class="pill">${session.team}</span>`:'');
+
+  // 구절 카드 (참고용 전체 표시)
+  $('verseBox').innerHTML=
+    `<div class="ref">${v.ref}</div>`+
+    `<div class="text"><span class="quote">"</span>${v.text}</div>`;
+
+  $('resultArea').innerHTML='';
+  renderCheckArea();
+}
+
+/* 확인 방식 토글 */
+document.querySelectorAll('.tab[data-mode]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab[data-mode]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    session.mode=btn.dataset.mode;
+    renderCheckArea();
+    $('resultArea').innerHTML='';
+  });
+});
+
+function renderCheckArea(){
+  const v=VERSE_DB[session.topic][session.verseIdx];
+  const area=$('checkArea');
+
+  if(session.mode==='fill'){
+    // 빈칸 채우기: blanks 단어를 input으로 치환
+    let html='<p style="font-size:13px;color:var(--moss);margin-bottom:10px;">'+
+             '빈칸에 알맞은 말씀을 채워 보세요.</p><div style="font-size:16px;line-height:2.4;">';
+    let text=v.text;
+    v.blanks.forEach((b,i)=>{
+      text=text.replace(b,`@@BLANK${i}@@`);
+    });
+    const parts=text.split(/(@@BLANK\d+@@)/);
+    parts.forEach(part=>{
+      const mm=part.match(/@@BLANK(\d+)@@/);
+      if(mm){
+        html+=`<input class="fill-input" data-blank="${mm[1]}" autocomplete="off" placeholder="?">`;
+      } else {
+        html+=part.replace(/</g,'&lt;');
+      }
+    });
+    html+='</div>';
+    html+=`<p class="hint">${v.ref}</p>`;
+    area.innerHTML=html;
+  } else {
+    // 전체 입력
+    area.innerHTML=
+      `<p style="font-size:13px;color:var(--moss);margin-bottom:10px;">`+
+      `<strong>${v.ref}</strong> 말씀을 외워서 적어 보세요.</p>`+
+      `<textarea id="fullInput" placeholder="말씀을 입력하세요..."></textarea>`;
+  }
+}
+
+/* ============================================================
+   암송 확인
+   ============================================================ */
+$('btnCheck').addEventListener('click',()=>{
+  const v=VERSE_DB[session.topic][session.verseIdx];
+  let score, detailHtml='';
+
+  if(session.mode==='fill'){
+    const inputs=[...document.querySelectorAll('.fill-input')];
+    if(inputs.some(i=>!i.value.trim())){ toast('빈칸을 모두 채워 주세요'); return; }
+    let correct=0;
+    inputs.forEach(inp=>{
+      const idx=+inp.dataset.blank;
+      const ok=normalize(inp.value)===normalize(v.blanks[idx]);
+      if(ok) correct++;
+      inp.style.borderColor=ok?'var(--moss)':'var(--berry)';
+      inp.style.background=ok?'rgba(63,95,74,.1)':'rgba(156,59,66,.1)';
+    });
+    score=Math.round(correct/inputs.length*100);
+    detailHtml='<div class="diff-box">정답: '+
+      v.blanks.map(b=>`<span class="ok">${b}</span>`).join(' · ')+'</div>';
+  } else {
+    const ans=$('fullInput').value.trim();
+    if(!ans){ toast('말씀을 입력해 주세요'); return; }
+    const sim=similarity(ans,v.text);
+    score=sim.score;
+    // 어떤 단어를 맞췄는지 표시
+    let dh='<div class="diff-box"><strong>채점 결과</strong><br>';
+    dh+=sim.b.map((w,i)=>
+      sim.matched[i]?`<span class="ok">${w}</span>`:`<span class="miss">${w}</span>`
+    ).join(' ');
+    dh+='</div>';
+    detailHtml=dh;
+  }
+
+  // 결과 판정
+  const passed=score>=80;
+  let cls,emoji,msg;
+  if(score>=80){ cls='pass'; emoji='✅'; msg='훌륭해요! 말씀을 마음에 잘 새겼어요.'; }
+  else if(score>=50){ cls='near'; emoji='📖'; msg='거의 다 왔어요. 조금만 더 외워 볼까요?'; }
+  else { cls='fail'; emoji='🌱'; msg='괜찮아요. 다시 천천히 읽고 도전해 봐요.'; }
+
+  $('resultArea').innerHTML=
+    `<div class="result ${cls}">`+
+    `<span class="score">${emoji} ${score}점</span>`+
+    `<span class="msg">${msg}</span></div>`+detailHtml;
+
+  // 저장
+  const p=store.people[session.name];
+  const rec=p.verses[session.verseIdx];
+  rec.score=Math.max(rec.score,score);
+  if(passed) rec.passed=true;
+  p.updated=Date.now();
+  saveStore();
+
+  if(passed) toast('암송 완료로 기록되었어요! 🎉');
+});
+
+/* 다음 구절 */
+$('btnNext').addEventListener('click',()=>{
+  const list=VERSE_DB[session.topic];
+  if(session.verseIdx<list.length-1){
+    session.verseIdx++;
+    loadVerse();
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else {
+    const done=store.people[session.name].verses.filter(v=>v.passed).length;
+    toast(`마지막 구절이에요! 총 ${done}구절 암송 완료 🎊`);
+  }
+});
+
+/* 처음으로 */
+$('btnChangeTopic').addEventListener('click',()=>{
+  $('verseCard').classList.add('hidden');
+  $('setupCard').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ============================================================
+   인도자 현황판
+   ============================================================ */
+function renderDashboard(){
+  const people=Object.values(store.people);
+  const totalVerses=people.reduce((s,p)=>s+p.verses.filter(v=>v.passed).length,0);
+  let avgRate=0;
+  if(people.length){
+    avgRate=Math.round(
+      people.reduce((s,p)=>s+p.verses.filter(v=>v.passed).length/p.verses.length,0)
+      /people.length*100);
+  }
+  $('stPeople').textContent=people.length;
+  $('stVerses').textContent=totalVerses;
+  $('stRate').textContent=avgRate+'%';
+
+  const list=$('peopleList');
+  if(!people.length){
+    list.innerHTML='<div class="empty"><span class="big">📜</span>'+
+      '아직 참가자 기록이 없어요.<br>참가자가 암송을 시작하면 여기에 표시됩니다.</div>';
+    return;
+  }
+  // 진도 높은 순 정렬
+  people.sort((a,b)=>
+    b.verses.filter(v=>v.passed).length - a.verses.filter(v=>v.passed).length);
+
+  list.innerHTML=people.map(p=>{
+    const done=p.verses.filter(v=>v.passed).length;
+    const total=p.verses.length;
+    const pct=Math.round(done/total*100);
+    let badge,bcls;
+    if(done===total){ badge='완주 🏆'; bcls='done'; }
+    else if(done>0){ badge=`진행중 ${done}/${total}`; bcls='prog'; }
+    else { badge='시작 전'; bcls='zero'; }
+    return `<div class="person">
+      <div class="person-head">
+        <div>
+          <div class="person-name">${p.name}</div>
+          <div class="person-team">${p.team||'—'} · ${p.topic}</div>
+        </div>
+        <span class="badge ${bcls}">${badge}</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="person-verses">${
+        p.verses.map(v=>
+          `<div class="vline"><span class="dot ${v.passed?'y':'n'}"></span>`+
+          `${v.ref} ${v.passed?'· 완료':(v.score?`· 최고 ${v.score}점`:'')}</div>`
+        ).join('')
+      }</div>
+    </div>`;
+  }).join('');
+}
+
+/* 내보내기 (CSV) */
+$('btnExport').addEventListener('click',()=>{
+  const people=Object.values(store.people);
+  if(!people.length){ toast('내보낼 기록이 없어요'); return; }
+  let csv='\uFEFF이름,조,주제,암송완료,전체구절,달성률(%)\n';
+  people.forEach(p=>{
+    const done=p.verses.filter(v=>v.passed).length;
+    csv+=`${p.name},${p.team||''},${p.topic},${done},${p.verses.length},`+
+         `${Math.round(done/p.verses.length*100)}\n`;
+  });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='말씀암송_현황.csv';
+  a.click();
+  toast('현황 파일을 내려받았어요');
+});
+
+/* 초기화 */
+$('btnReset').addEventListener('click',()=>{
+  if(confirm('모든 참가자 기록을 삭제할까요? 되돌릴 수 없어요.')){
+    store={people:{}}; saveStore(); renderDashboard();
+    toast('모든 기록이 초기화되었어요');
+  }
+});
+</script>
+</body>
+</html>
